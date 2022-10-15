@@ -33,11 +33,17 @@ class CustomTopo(Topo):
 
 
 def runNet():
-    topo = CustomTopo()
-    return topo
+    # topo = CustomTopo()
+    # return topo
+
+    topo = CustomTopo(n=6)
+    net = Mininet(topo)
+    net.start()
+    net.pingAll()
+    net.stop()
 
 
-topos = {'custom': (lambda: CustomTopo())}
+topos = {'custom': (lambda n: CustomTopo(n=n))}
 
 if __name__ == '__main__':
     setLogLevel('info')

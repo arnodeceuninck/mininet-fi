@@ -101,10 +101,10 @@ topos = {'my_topo': SingleSwitchTopo}
 sftp://<server_ip>/
 ````
 
-Fat  tree assingment is not a real assignmetn
+Fat  tree assignment is not a real assignment
 
-Programming assingment for next week is inth googl classroom.
-You need to use a spanning tre for the ssignment. 
+Programming assignment for next week is in the googl classroom.
+You need to use a spanning tree for the assignment. 
 Skeleton code is already provided. Don't forget to use a spanning tree to prevent broadcast storms.
 
 ## Next slides
