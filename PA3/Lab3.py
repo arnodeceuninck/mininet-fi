@@ -33,12 +33,57 @@ class CustomSlice(EventMixin):
         '''
 
         self.portmap = {
-            ('00-00-00-00-00-01', EthAddr('00:00:00:00:00:01'),
-             EthAddr('00:00:00:00:00:05'), 200): '00-00-00-00-00-04',
-
-            """ Please add your logic here """
-
+            # ('00-00-00-00-00-01', EthAddr('00:00:00:00:00:01'),
+            #  EthAddr('00:00:00:00:00:05'), 200): '00-00-00-00-00-04',
+            #
+            # """ Please add your logic here """
         }
+
+        udp_config = {
+            "port": 200,
+            "dst_mac": EthAddr('00:00:00:00:00:05'),
+            "host_switch_routes":
+                {
+                    1: [1, 4, 7],
+                    2: [2, 1, 4, 7]
+                },
+            "hosts_disallowed": [3, 4]
+        }
+
+        http_config = {
+            "port": 80,
+            "dst_mac": EthAddr('00:00:00:00:00:06'),
+            "host_switch_routes":
+                {
+                    2: [2, 5, 7],
+                    3: [3, 6, 7],
+                    4: [3, 6, 7]
+                },
+            "hosts_disallowed": [1]
+        }
+
+        self.configs = [udp_config, http_config]
+
+        # Add the routes from the configs to the portmap
+        for config in self.configs:
+
+            def mac_int_to_mac(mac_int):
+                assert 10 > mac_int >= 0  # Else not supported
+                return EthAddr("00:00:00:00:00:0" + str(mac_int))
+
+            def dpid_int_to_dpid(dpid_int):
+                assert 10 > dpid_int >= 0
+                return "00-00-00-00-00-0" + str(dpid_int)
+
+            def get_portmap_key(dpid_int, src_mac_int, dst_mac, port):
+                dpid = dpid_int_to_dpid(dpid_int)
+                src_mac = mac_int_to_mac(src_mac_int)
+                return (dpid, src_mac, dst_mac, port)
+
+            for host, route in config["host_switch_routes"].items():
+                for i in range(len(route) - 1):
+                    key = get_portmap_key(route[i], host, config["dst_mac"], config["port"])
+                    self.portmap[key] = dpid_int_to_dpid(route[i + 1])
 
     def _handle_ConnectionUp(self, event):
         dpid = dpidToStr(event.dpid)

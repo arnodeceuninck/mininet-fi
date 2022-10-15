@@ -84,6 +84,7 @@ class TopologySlice(EventMixin):
 
 
 def launch():
+    log.debug("Launching Topology Slice")
     # Run spanning tree so that we can deal with topologies with loops
     pox.openflow.discovery.launch()
     pox.openflow.spanning_tree.launch()
